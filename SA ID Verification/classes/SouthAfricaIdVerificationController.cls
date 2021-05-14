@@ -54,7 +54,8 @@ public class SouthAfricaIdVerificationController {
         String country = cAuth.Country__c;
         
         List<Holiday__c> existingholiday = [Select Id,Name,Type__c,Description__c,Identity__C,Date__c From
-                                            Holiday__c where identity__C =: relatedID];
+                                            Holiday__c where identity__C =: relatedID
+                                            and Date__c =: DOB];
         
         
         if(existingholiday.size() == 0){
