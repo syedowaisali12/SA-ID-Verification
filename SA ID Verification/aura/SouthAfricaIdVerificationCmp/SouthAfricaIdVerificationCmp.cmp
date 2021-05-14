@@ -8,6 +8,10 @@
     <aura:attribute name="SAcitizen" type="String"/>
     <aura:attribute name="Gender" type="String"/>
     <aura:attribute name="showDetailsSection" type="Boolean" default="false"/>
+    <aura:attribute name="holidayFound" type="Boolean" default="false"/>
+
+    
+    
     
     <!-- Search Box -->
     
@@ -18,8 +22,8 @@
             
             <div class="slds-card slds-m-bottom_medium">
                 
-                <p class="slds-m-top_x-small slds-align_absolute-center">Check if there
-                    are any important public holidays on your date of birth using ID Number.</p>
+                <p class="slds-m-top_x-small slds-align_absolute-center slds-text-heading_small">Check if there
+                    are any important public holidays on your date of birth by entring your ID Number.</p>
                 
                 <div class="slds-p-around_medium">
                     <lightning:input
@@ -60,10 +64,13 @@
         <div class="slds-grid slds-gutters slds-m-bottom_medium slds-align_absolute-center">
             
             
-            
             <div class="slds-col slds-size_4-of-6">
-                
+               
                 <div class="slds-card">
+                    
+                    <aura:if isTrue="{!v.holidayFound}">
+                        <p class="slds-m-top_x-small slds-align_absolute-center slds-text-color_destructive slds-text-heading_small">No holiday found on your Birth Date</p>
+                    </aura:if>
                     
                     <div class="slds-form slds-m-around_small" role="list">
                         <div class="slds-form__row">
