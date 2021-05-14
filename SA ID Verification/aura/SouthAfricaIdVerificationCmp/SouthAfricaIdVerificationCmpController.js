@@ -4,6 +4,8 @@
     },
     
     
+    //Sending Decoded Information to Backend and getting the Holiday Detail in Return.
+    
     search: function (component, event, helper) {
         
         component.set('v.showDetailsSection',false);
@@ -15,7 +17,7 @@
         component.set("v.Gender",gender);
         component.set("v.DOB",DOB);
         
-        if(isCitizen == "true"){
+        if(isCitizen == true){
             
         component.set("v.SAcitizen","Yes");    
             
@@ -24,7 +26,9 @@
             component.set("v.SAcitizen","No");
             
         }
-                
+       
+       //Promises to call two Async methods one after another. 
+        
         helper.callServer(
             component,
             helper,
@@ -48,6 +52,13 @@
                 }
             ).then(function(r) {
                 
+                if(r.result == null){
+                   
+                    component.set('v.holidayFound', true);
+                }else{
+                    component.set('v.holidayFound', false);
+                }
+                
                 component.set('v.holidayDetails', r.result);
                 component.set('v.showDetailsSection',true);
                 
@@ -57,6 +68,9 @@
         })
         
     },
+    
+    
+    //Validating Veridication ID Number Using Regular Expression
     
     validateId: function (component, event, helper) {
         
