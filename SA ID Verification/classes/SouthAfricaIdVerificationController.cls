@@ -5,6 +5,9 @@ public class SouthAfricaIdVerificationController {
     @AuraEnabled
     public static String createOrUpdateID(Long idNumber,String gender,Boolean isCitizen,Date DOB){
         
+        
+        // This Logic is used to upsert identity record
+        
         Identity__c identity = new Identity__c();
         
         try{
@@ -33,6 +36,9 @@ public class SouthAfricaIdVerificationController {
             
             upsert identity ID_Number__c;
             
+            
+            //Calling future method to get all holidays related to Birth Year using Calendarific API. 
+            
             fetchHolidays(DOB,identity.Id);
             
             
@@ -48,14 +54,18 @@ public class SouthAfricaIdVerificationController {
     public static void fetchHolidays(date DOB,Id relatedID) {
         
         
+        //Getting API Parameters from Metadata 
+        
         Calendarific_Auth__mdt  cAuth = Calendarific_Auth__mdt.getInstance('SA_Auth');
         String baseUrl = cAuth.base_Url__c;
         String api_key = cAuth.Api_Key__c;
         String country = cAuth.Country__c;
         
+        
+        // Calling API only if its a new Identity
+        
         List<Holiday__c> existingholiday = [Select Id,Name,Type__c,Description__c,Identity__C,Date__c From
-                                            Holiday__c where identity__C =: relatedID
-                                            and Date__c =: DOB];
+                                            Holiday__c where identity__C =: relatedID];
         
         
         if(existingholiday.size() == 0){
@@ -72,13 +82,15 @@ public class SouthAfricaIdVerificationController {
             
             if (response.getStatusCode() == 200) {
                 
+                //Json Parsing to get the holiday details and store it in Holiday Object.
+                
                 Map<String, Object> results = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
                 
                 Map<String, Object> resp = (Map<String, Object>) results.get('response');
                 
                 List<Object> holidays = (List<Object>) resp.get('holidays');
                 
-                
+               
                 for (Object holiday: holidays) {
                     
                     Map<String, Object> holidayDetails = (Map<String, Object>)holiday;
@@ -119,12 +131,15 @@ public class SouthAfricaIdVerificationController {
        
     }
     
+    //Method to get the Holiday Information from the Object and return it to Aura Component.
+    
     @AuraEnabled
     public static holidayWrapper getHolidayDetail(Date DOB,String relatedID){
         
         system.debug('relatedID:::'+relatedID);
         List<Holiday__c> holiday = [Select Id,Name,Type__c,Description__c,Identity__C,Date__c From
-                                    Holiday__c where identity__c =: relatedID];
+                                    Holiday__c where identity__c =: relatedID
+                                    and Date__c =: DOB];
         
        system.debug('holiday:::'+holiday);
 
@@ -138,6 +153,7 @@ public class SouthAfricaIdVerificationController {
         return null;
         
     }
+    
     
     public class holidayWrapper {
         
