@@ -1,4 +1,6 @@
 ({
+    //Decoding Gender, Citizen Status and Date of Birth From verification ID Number
+    
     getGender : function(idNumber) {
         
         var genderCode = idNumber.substring(6, 10);
@@ -34,6 +36,9 @@
         
         return dateOfBirth;
     },
+    
+    
+    //Calling server and retunring the response to promise.
     
     callServer : function(component, helper, actionName, params) {
         return new Promise($A.getCallback(function(resolve, reject) {
